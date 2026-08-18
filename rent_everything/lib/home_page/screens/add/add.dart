@@ -287,7 +287,7 @@ class AddPage extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           GestureDetector(
-            onTap: controller.pickImage,
+            onTap: controller.showImageSourcePicker,
             child: CustomPaint(
               painter: _DashedBorderPainter(),
               child: Container(

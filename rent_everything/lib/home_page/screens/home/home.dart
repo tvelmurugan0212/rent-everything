@@ -276,28 +276,88 @@ class Home extends StatelessWidget {
 
                   const SizedBox(height: 16),
 
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 16),
-                    child: RentalCard(
-                      image: 'assets/images/car.png',
-                      title: 'Toyota Innova Crysta',
-                      rating: '4.8',
-                      reviews: '124',
-                      location: 'Vellore',
-                      distance: '2 km',
-                      price: '2,500/day',
-                      availability: 'Available Today',
-                      onpress: () {
-                        Get.toNamed('/details');
-                      },
-                      onRentNow: () {
-                        Get.toNamed('/booking-summary');
-                      },
-                      onFavorite: () {
-                        // Favorite action
-                      },
-                    ),
-                  ),
+                  Obx(() {
+                    if (controller.isLoadingProducts.value) {
+                      return const Center(
+                        child: Padding(
+                          padding: EdgeInsets.all(20),
+                          child: CircularProgressIndicator(
+                            color: HomePageMobile.primaryColor,
+                          ),
+                        ),
+                      );
+                    }
+
+                    if (controller.products.isEmpty) {
+                      return const Center(
+                        child: Padding(
+                          padding: EdgeInsets.all(20),
+                          child: Column(
+                            children: [
+                              Icon(
+                                Icons.car_rental,
+                                size: 50,
+                                color: HomePageMobile.greyText,
+                              ),
+                              SizedBox(height: 8),
+                              Text(
+                                'No products available yet',
+                                style: TextStyle(
+                                  fontSize: 14,
+                                  color: HomePageMobile.greyText,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      );
+                    }
+
+                    return Column(
+                      children: controller.products.map((product) {
+                        final String imageUrl = HomeController.getImageUrl(
+                          product,
+                        );
+                        final String name =
+                            product['productName'] ?? 'Untitled';
+                        final double price = (product['rentalPrice'] ?? 0)
+                            .toDouble();
+                        final String city = product['pickupCity'] ?? 'Unknown';
+
+                        return Padding(
+                          padding: const EdgeInsets.only(bottom: 16),
+                          child: Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: 16),
+                            child: RentalCard(
+                              image: imageUrl.isNotEmpty
+                                  ? imageUrl
+                                  : 'assets/images/car.png',
+                              title: name,
+                              rating: '4.8',
+                              reviews: '0',
+                              location: city,
+                              distance: '0 km',
+                              price: '${price.toStringAsFixed(0)}/day',
+                              availability: 'Available',
+                              onpress: () {
+                                Get.toNamed(
+                                  '/details',
+                                  arguments: {'id': product['id']},
+                                );
+                              },
+                              onRentNow: () {
+                                Get.toNamed(
+                                  '/booking-summary',
+                                  arguments: {'id': product['id']},
+                                );
+                              },
+                              onFavorite: () {},
+                            ),
+                          ),
+                        );
+                      }).toList(),
+                    );
+                  }),
                 ],
               ),
             ),

@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 
 class RentalCard extends StatelessWidget {
@@ -35,6 +37,32 @@ class RentalCard extends StatelessWidget {
   static const Color primaryColor = Color(0xFF0674A1);
   static const Color darkText = Color(0xFF202938);
 
+  Widget _buildImage() {
+    if (image.startsWith('data:image')) {
+      final String base64Data = image.split(',').last;
+      return Image.memory(
+        base64Decode(base64Data),
+        width: double.infinity,
+        height: 155,
+        fit: BoxFit.cover,
+      );
+    } else if (image.startsWith('http')) {
+      return Image.network(
+        image,
+        width: double.infinity,
+        height: 155,
+        fit: BoxFit.cover,
+      );
+    } else {
+      return Image.asset(
+        image,
+        width: double.infinity,
+        height: 155,
+        fit: BoxFit.cover,
+      );
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
@@ -45,7 +73,7 @@ class RentalCard extends StatelessWidget {
           borderRadius: BorderRadius.circular(11),
           boxShadow: [
             BoxShadow(
-              color: Colors.black.withOpacity(0.10),
+              color: Colors.black.withValues(alpha: 0.10),
               blurRadius: 9,
               offset: const Offset(0, 3),
             ),
@@ -61,7 +89,7 @@ class RentalCard extends StatelessWidget {
             SizedBox(
               width: double.infinity,
               height: 155,
-              child: Image.asset(image, scale: 0.4),
+              child: _buildImage(),
             ),
 
             // ============================================================
