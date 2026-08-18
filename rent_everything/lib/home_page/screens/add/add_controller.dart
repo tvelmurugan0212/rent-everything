@@ -1,10 +1,18 @@
+import 'dart:convert';
 import 'dart:io';
 
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
 
 class AddController extends GetxController {
+  // ============================================================
+  // FORM KEY
+  // ============================================================
+
+  final GlobalKey<FormState> formKey = GlobalKey<FormState>();
+
   // ============================================================
   // TEXT CONTROLLERS
   // ============================================================
@@ -15,6 +23,13 @@ class AddController extends GetxController {
   final securityDepositController = TextEditingController();
   final pickupCityController = TextEditingController();
   final conditionController = TextEditingController();
+
+  // ============================================================
+  // LOADING STATE
+  // ============================================================
+
+  final RxBool isLoading = false.obs;
+  final RxBool hasAttemptedSave = false.obs;
 
   // ============================================================
   // IMAGE
@@ -109,7 +124,6 @@ class AddController extends GetxController {
     if (date != null) {
       availableFrom.value = date;
 
-      // If end date is before start date, clear it.
       if (availableUntil.value != null &&
           availableUntil.value!.isBefore(date)) {
         availableUntil.value = null;
@@ -133,24 +147,145 @@ class AddController extends GetxController {
   }
 
   // ============================================================
-  // SAVE
+  // VALIDATORS
   // ============================================================
 
-  void saveProduct() {
-    if (productNameController.text.trim().isEmpty) {
+  String? validateProductName(String? value) {
+    if (value == null || value.trim().isEmpty) {
+      return 'Please enter product name';
+    }
+    return null;
+  }
+
+  String? validateDescription(String? value) {
+    if (value == null || value.trim().isEmpty) {
+      return 'Please enter description';
+    }
+    return null;
+  }
+
+  String? validateRentalPrice(String? value) {
+    if (value == null || value.trim().isEmpty) {
+      return 'Please enter rental price';
+    }
+    final double? price = double.tryParse(value.trim());
+    if (price == null || price <= 0) {
+      return 'Please enter a valid price greater than 0';
+    }
+    return null;
+  }
+
+  String? validateSecurityDeposit(String? value) {
+    if (value == null || value.trim().isEmpty) {
+      return 'Please enter security deposit';
+    }
+    final double? deposit = double.tryParse(value.trim());
+    if (deposit == null || deposit < 0) {
+      return 'Please enter a valid deposit amount';
+    }
+    return null;
+  }
+
+  String? validatePickupCity(String? value) {
+    if (value == null || value.trim().isEmpty) {
+      return 'Please enter pickup city';
+    }
+    return null;
+  }
+
+  String? validateCondition(String? value) {
+    if (value == null || value.trim().isEmpty) {
+      return 'Please enter condition';
+    }
+    return null;
+  }
+
+  String? validateImage() {
+    if (selectedImage.value == null) {
+      return 'Please select a product image';
+    }
+    return null;
+  }
+
+  String? validateCategory() {
+    if (selectedCategory.value.isEmpty) {
+      return 'Please select a category';
+    }
+    return null;
+  }
+
+  String? validateBrand() {
+    if (selectedBrand.value.isEmpty) {
+      return 'Please select a brand';
+    }
+    return null;
+  }
+
+  String? validateAvailableFrom() {
+    if (availableFrom.value == null) {
+      return 'Please select start date';
+    }
+    return null;
+  }
+
+  String? validateAvailableUntil() {
+    if (availableUntil.value == null) {
+      return 'Please select end date';
+    }
+    return null;
+  }
+
+  // ============================================================
+  // SAVE PRODUCT
+  // ============================================================
+
+  Future<void> saveProduct() async {
+    hasAttemptedSave.value = true;
+
+    // Validate all text fields via Form
+    if (!formKey.currentState!.validate()) return;
+
+    // Validate dropdowns, dates, and image
+    if (selectedCategory.value.isEmpty) {
       Get.snackbar(
         'Required',
-        'Please enter product name',
+        'Please select a category',
         snackPosition: SnackPosition.BOTTOM,
+        backgroundColor: Colors.red.shade100,
+        colorText: Colors.black,
       );
       return;
     }
 
-    if (selectedCategory.value.isEmpty) {
+    if (selectedBrand.value.isEmpty) {
       Get.snackbar(
         'Required',
-        'Please select category',
+        'Please select a brand',
         snackPosition: SnackPosition.BOTTOM,
+        backgroundColor: Colors.red.shade100,
+        colorText: Colors.black,
+      );
+      return;
+    }
+
+    if (availableFrom.value == null) {
+      Get.snackbar(
+        'Required',
+        'Please select available from date',
+        snackPosition: SnackPosition.BOTTOM,
+        backgroundColor: Colors.red.shade100,
+        colorText: Colors.black,
+      );
+      return;
+    }
+
+    if (availableUntil.value == null) {
+      Get.snackbar(
+        'Required',
+        'Please select available until date',
+        snackPosition: SnackPosition.BOTTOM,
+        backgroundColor: Colors.red.shade100,
+        colorText: Colors.black,
       );
       return;
     }
@@ -158,28 +293,95 @@ class AddController extends GetxController {
     if (selectedImage.value == null) {
       Get.snackbar(
         'Required',
-        'Please select product image',
+        'Please select a product image',
         snackPosition: SnackPosition.BOTTOM,
+        backgroundColor: Colors.red.shade100,
+        colorText: Colors.black,
       );
       return;
     }
 
-    // API call can be added here.
-    //
-    // Example:
-    //
-    // await repository.addProduct(
-    //   name: productNameController.text,
-    //   category: selectedCategory.value,
-    //   image: selectedImage.value!,
-    // );
+    try {
+      isLoading.value = true;
 
-    Get.snackbar(
-      'Success',
-      'Product saved successfully',
-      snackPosition: SnackPosition.BOTTOM,
-    );
+      // --- Convert Image to Base64 ---
+      final List<int> imageBytes = await selectedImage.value!.readAsBytes();
+      final String base64Image = base64Encode(imageBytes);
+      final String imageDataUrl = 'data:image/jpeg;base64,$base64Image';
+
+      // --- Save to Cloud Firestore ---
+      final double rentalPrice =
+          double.parse(rentalPriceController.text.trim());
+      final double securityDeposit =
+          double.parse(securityDepositController.text.trim());
+
+      final Timestamp now = Timestamp.now();
+
+      await FirebaseFirestore.instance.collection('products').add({
+        'productName': productNameController.text.trim(),
+        'description': descriptionController.text.trim(),
+        'category': selectedCategory.value,
+        'brand': selectedBrand.value,
+        'rentalPrice': rentalPrice,
+        'securityDeposit': securityDeposit,
+        'availableFrom': Timestamp.fromDate(availableFrom.value!),
+        'availableUntil': Timestamp.fromDate(availableUntil.value!),
+        'pickupCity': pickupCityController.text.trim(),
+        'condition': conditionController.text.trim(),
+        'imageUrl': imageDataUrl,
+        'createdAt': now,
+        'updatedAt': now,
+      });
+
+      // --- Success ---
+      Get.snackbar(
+        'Success',
+        'Product saved successfully',
+        snackPosition: SnackPosition.BOTTOM,
+        backgroundColor: Colors.green.shade100,
+        colorText: Colors.black,
+      );
+
+      resetForm();
+    } catch (e) {
+      Get.snackbar(
+        'Error',
+        'Failed to save product: $e',
+        snackPosition: SnackPosition.BOTTOM,
+        backgroundColor: Colors.red.shade100,
+        colorText: Colors.black,
+      );
+    } finally {
+      isLoading.value = false;
+    }
   }
+
+  // ============================================================
+  // RESET FORM
+  // ============================================================
+
+  void resetForm() {
+    hasAttemptedSave.value = false;
+
+    productNameController.clear();
+    descriptionController.clear();
+    rentalPriceController.clear();
+    securityDepositController.clear();
+    pickupCityController.clear();
+    conditionController.clear();
+
+    selectedImage.value = null;
+    selectedCategory.value = '';
+    selectedBrand.value = '';
+    availableFrom.value = null;
+    availableUntil.value = null;
+
+    formKey.currentState?.reset();
+  }
+
+  // ============================================================
+  // DISPOSE
+  // ============================================================
 
   @override
   void onClose() {
