@@ -32,9 +32,6 @@ class Booking extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              // =========================================================
-              // TITLE
-              // =========================================================
               const SizedBox(height: 16),
               const Center(
                 child: Text(
@@ -47,9 +44,6 @@ class Booking extends StatelessWidget {
                 ),
               ),
 
-              // =========================================================
-              // TAB SWITCH
-              // =========================================================
               const SizedBox(height: 25),
 
               Padding(
@@ -57,9 +51,6 @@ class Booking extends StatelessWidget {
                 child: _bookingTabs(),
               ),
 
-              // =========================================================
-              // CONTENT
-              // =========================================================
               const SizedBox(height: 30),
 
               Obx(
@@ -148,10 +139,6 @@ class Booking extends StatelessWidget {
     );
   }
 
-  // ========================================================================
-  // BOOKING REQUESTS
-  // ========================================================================
-
   Widget _bookingRequests() {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 12),
@@ -187,10 +174,6 @@ class Booking extends StatelessWidget {
       ),
     );
   }
-
-  // ========================================================================
-  // REQUEST CARD
-  // ========================================================================
 
   Widget _requestCard({
     required String productName,
@@ -326,10 +309,6 @@ class Booking extends StatelessWidget {
     );
   }
 
-  // ========================================================================
-  // MY BOOKINGS
-  // ========================================================================
-
   Widget _myBookings() {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 14),
@@ -351,10 +330,6 @@ class Booking extends StatelessWidget {
     );
   }
 
-  // ========================================================================
-  // MY BOOKING CARD
-  // ========================================================================
-
   Widget _myBookingCard({required String dates}) {
     return Container(
       width: double.infinity,
@@ -374,9 +349,6 @@ class Booking extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          // ================================================================
-          // DATE
-          // ================================================================
           Row(
             children: [
               const Icon(
@@ -404,9 +376,6 @@ class Booking extends StatelessWidget {
 
           const SizedBox(height: 14),
 
-          // ================================================================
-          // PRODUCT
-          // ================================================================
           const Text(
             'Toyota Innova Crysta',
             style: TextStyle(

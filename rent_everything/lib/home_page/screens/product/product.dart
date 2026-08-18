@@ -23,7 +23,7 @@ class ProductsPage extends StatelessWidget {
               const SizedBox(height: 12),
               const Center(
                 child: Text(
-                  'Cars',
+                  'Products',
                   style: TextStyle(
                     fontSize: 18,
                     fontWeight: FontWeight.w700,
