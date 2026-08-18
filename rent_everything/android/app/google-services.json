@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "479057193984",
+    "project_id": "rent-everything-5b7e7",
+    "storage_bucket": "rent-everything-5b7e7.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:479057193984:android:e8cea338c0175827c17ce5",
+        "android_client_info": {
+          "package_name": "com.example.rent_everything"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB_ADpGrR1fIzYlVnVTGhLYWWoqLPqwpPc"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
