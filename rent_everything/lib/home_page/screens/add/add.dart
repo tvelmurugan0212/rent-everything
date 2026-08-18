@@ -237,7 +237,9 @@ class AddPage extends StatelessWidget {
                       style: ElevatedButton.styleFrom(
                         backgroundColor: primaryColor,
                         foregroundColor: Colors.white,
-                        disabledBackgroundColor: primaryColor.withValues(alpha: 0.6),
+                        disabledBackgroundColor: primaryColor.withValues(
+                          alpha: 0.6,
+                        ),
                         elevation: 0,
                         padding: EdgeInsets.zero,
                         shape: RoundedRectangleBorder(
@@ -371,10 +373,7 @@ class AddPage extends StatelessWidget {
             const SizedBox(height: 6),
             Text(
               imageError,
-              style: const TextStyle(
-                fontSize: 12,
-                color: Colors.red,
-              ),
+              style: const TextStyle(fontSize: 12, color: Colors.red),
             ),
           ],
         ],
@@ -408,53 +407,53 @@ class AddPage extends StatelessWidget {
     TextInputType? keyboardType,
     String? Function(String?)? validator,
   }) {
-    return TextFormField(
-      controller: controller,
-      keyboardType: keyboardType,
-      validator: validator,
-      style: const TextStyle(fontSize: 14, color: Colors.black),
-      decoration: InputDecoration(
-        hintText: hint,
-        hintStyle: const TextStyle(
-          fontSize: 14,
-          color: hintText,
-          fontWeight: FontWeight.w400,
-        ),
-        prefixText: prefix != null ? '$prefix ' : null,
-        prefixStyle: const TextStyle(
-          fontSize: 18,
-          color: hintText,
-          fontWeight: FontWeight.w400,
-        ),
-        contentPadding: const EdgeInsets.symmetric(
-          horizontal: 16,
-          vertical: 16,
-        ),
-        filled: true,
-        fillColor: Colors.white,
-        errorStyle: const TextStyle(
-          fontSize: 12,
-          color: Colors.red,
-        ),
-        border: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(15),
-          borderSide: const BorderSide(color: borderColor),
-        ),
-        enabledBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(15),
-          borderSide: const BorderSide(color: borderColor),
-        ),
-        focusedBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(15),
-          borderSide: const BorderSide(color: primaryColor),
-        ),
-        errorBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(15),
-          borderSide: const BorderSide(color: Colors.red),
-        ),
-        focusedErrorBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(15),
-          borderSide: const BorderSide(color: Colors.red),
+    return SizedBox(
+      height: 50,
+      child: TextFormField(
+        controller: controller,
+        keyboardType: keyboardType,
+        validator: validator,
+        style: const TextStyle(fontSize: 14, color: Colors.black),
+        decoration: InputDecoration(
+          hintText: hint,
+          hintStyle: const TextStyle(
+            fontSize: 14,
+            color: hintText,
+            fontWeight: FontWeight.w400,
+          ),
+          prefixText: prefix != null ? '$prefix ' : null,
+          prefixStyle: const TextStyle(
+            fontSize: 14,
+            color: hintText,
+            fontWeight: FontWeight.w400,
+          ),
+          contentPadding: const EdgeInsets.symmetric(
+            horizontal: 16,
+            vertical: 6,
+          ),
+          filled: true,
+          fillColor: Colors.white,
+          errorStyle: const TextStyle(fontSize: 12, color: Colors.red),
+          border: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(10),
+            borderSide: const BorderSide(color: borderColor),
+          ),
+          enabledBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(10),
+            borderSide: const BorderSide(color: borderColor),
+          ),
+          focusedBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(10),
+            borderSide: const BorderSide(color: primaryColor),
+          ),
+          errorBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(10),
+            borderSide: const BorderSide(color: Colors.red),
+          ),
+          focusedErrorBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(10),
+            borderSide: const BorderSide(color: Colors.red),
+          ),
         ),
       ),
     );
@@ -475,8 +474,9 @@ class AddPage extends StatelessWidget {
     return Obx(() {
       final String currentValue = value.value;
       final bool showErrors = controller.hasAttemptedSave.value;
-      final String? error =
-          (showErrors && validator != null) ? validator() : null;
+      final String? error = (showErrors && validator != null)
+          ? validator()
+          : null;
 
       return Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -487,8 +487,9 @@ class AddPage extends StatelessWidget {
                 Container(
                   decoration: const BoxDecoration(
                     color: Colors.white,
-                    borderRadius:
-                        BorderRadius.vertical(top: Radius.circular(20)),
+                    borderRadius: BorderRadius.vertical(
+                      top: Radius.circular(20),
+                    ),
                   ),
                   child: SafeArea(
                     child: Column(
@@ -528,10 +529,10 @@ class AddPage extends StatelessWidget {
             },
             child: Container(
               width: double.infinity,
-              height: 64,
+              height: 50,
               decoration: BoxDecoration(
                 color: Colors.white,
-                borderRadius: BorderRadius.circular(15),
+                borderRadius: BorderRadius.circular(10),
                 border: Border.all(
                   color: error != null ? Colors.red : borderColor,
                 ),
@@ -543,9 +544,8 @@ class AddPage extends StatelessWidget {
                     child: Text(
                       currentValue.isEmpty ? hint : currentValue,
                       style: TextStyle(
-                        fontSize: 16,
-                        color:
-                            currentValue.isEmpty ? hintText : Colors.black,
+                        fontSize: 14,
+                        color: currentValue.isEmpty ? hintText : Colors.black,
                       ),
                     ),
                   ),
@@ -584,8 +584,9 @@ class AddPage extends StatelessWidget {
     return Obx(() {
       final DateTime? selectedDate = date.value;
       final bool showErrors = controller.hasAttemptedSave.value;
-      final String? error =
-          (showErrors && validator != null) ? validator() : null;
+      final String? error = (showErrors && validator != null)
+          ? validator()
+          : null;
 
       return Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -594,10 +595,10 @@ class AddPage extends StatelessWidget {
             onTap: onTap,
             child: Container(
               width: double.infinity,
-              height: 64,
+              height: 50,
               decoration: BoxDecoration(
                 color: Colors.white,
-                borderRadius: BorderRadius.circular(15),
+                borderRadius: BorderRadius.circular(10),
                 border: Border.all(
                   color: error != null ? Colors.red : borderColor,
                 ),
@@ -607,20 +608,16 @@ class AddPage extends StatelessWidget {
                 children: [
                   Expanded(
                     child: Text(
-                      selectedDate == null
-                          ? hint
-                          : _formatDate(selectedDate),
+                      selectedDate == null ? hint : _formatDate(selectedDate),
                       style: TextStyle(
-                        fontSize: 16,
-                        color: selectedDate == null
-                            ? hintText
-                            : Colors.black,
+                        fontSize: 14,
+                        color: selectedDate == null ? hintText : Colors.black,
                       ),
                     ),
                   ),
                   const Icon(
                     Icons.calendar_month_outlined,
-                    size: 27,
+                    size: 20,
                     color: Colors.black,
                   ),
                 ],
@@ -644,39 +641,42 @@ class AddPage extends StatelessWidget {
   // ========================================================================
 
   Widget _locationField() {
-    return TextFormField(
-      controller: controller.pickupCityController,
-      validator: controller.validatePickupCity,
-      style: const TextStyle(fontSize: 16, color: Colors.black),
-      decoration: InputDecoration(
-        hintText: 'Enter pickup city',
-        hintStyle: const TextStyle(fontSize: 16, color: hintText),
-        suffixIcon: const Icon(
-          Icons.location_on_outlined,
-          size: 28,
-          color: Colors.black,
-        ),
-        contentPadding: const EdgeInsets.symmetric(horizontal: 16),
-        errorStyle: const TextStyle(fontSize: 12, color: Colors.red),
-        border: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(15),
-          borderSide: const BorderSide(color: borderColor),
-        ),
-        enabledBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(15),
-          borderSide: const BorderSide(color: borderColor),
-        ),
-        focusedBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(15),
-          borderSide: const BorderSide(color: primaryColor),
-        ),
-        errorBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(15),
-          borderSide: const BorderSide(color: Colors.red),
-        ),
-        focusedErrorBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(15),
-          borderSide: const BorderSide(color: Colors.red),
+    return SizedBox(
+      height: 50,
+      child: TextFormField(
+        controller: controller.pickupCityController,
+        validator: controller.validatePickupCity,
+        style: const TextStyle(fontSize: 14, color: Colors.black),
+        decoration: InputDecoration(
+          hintText: 'Enter pickup city',
+          hintStyle: const TextStyle(fontSize: 14, color: hintText),
+          suffixIcon: const Icon(
+            Icons.location_on_outlined,
+            size: 20,
+            color: Colors.black,
+          ),
+          contentPadding: const EdgeInsets.symmetric(horizontal: 16),
+          errorStyle: const TextStyle(fontSize: 12, color: Colors.red),
+          border: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(10),
+            borderSide: const BorderSide(color: borderColor),
+          ),
+          enabledBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(10),
+            borderSide: const BorderSide(color: borderColor),
+          ),
+          focusedBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(10),
+            borderSide: const BorderSide(color: primaryColor),
+          ),
+          errorBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(10),
+            borderSide: const BorderSide(color: Colors.red),
+          ),
+          focusedErrorBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(10),
+            borderSide: const BorderSide(color: Colors.red),
+          ),
         ),
       ),
     );

@@ -115,27 +115,42 @@ class Home extends StatelessWidget {
                     color: Colors.white,
                     borderRadius: BorderRadius.circular(9),
                   ),
-                  child: const TextField(
+                  child: TextField(
+                    onChanged: controller.onSearchChanged,
                     textAlignVertical: TextAlignVertical.center,
-                    style: TextStyle(fontSize: 14, color: Colors.black),
+                    style: const TextStyle(fontSize: 14, color: Colors.black),
                     decoration: InputDecoration(
                       hintText: 'Search',
-                      hintStyle: TextStyle(
+                      hintStyle: const TextStyle(
                         color: Color(0xFF8B8B8B),
                         fontSize: 14,
                       ),
-                      prefixIcon: Icon(
+                      prefixIcon: const Icon(
                         Icons.search_rounded,
                         size: 20,
                         color: Color(0xFF8B8B8B),
                       ),
-                      suffixIcon: Icon(
-                        Icons.mic_none_rounded,
-                        size: 20,
-                        color: Color(0xFF8B8B8B),
-                      ),
+                      suffixIcon: Obx(() {
+                        if (controller.searchQuery.value.isEmpty) {
+                          return const Icon(
+                            Icons.mic_none_rounded,
+                            size: 20,
+                            color: Color(0xFF8B8B8B),
+                          );
+                        }
+                        return IconButton(
+                          icon: const Icon(
+                            Icons.clear,
+                            size: 20,
+                            color: Color(0xFF8B8B8B),
+                          ),
+                          onPressed: () {
+                            controller.onSearchChanged('');
+                          },
+                        );
+                      }),
                       border: InputBorder.none,
-                      contentPadding: EdgeInsets.symmetric(vertical: 7),
+                      contentPadding: const EdgeInsets.symmetric(vertical: 7),
                     ),
                   ),
                 ),
@@ -313,8 +328,42 @@ class Home extends StatelessWidget {
                       );
                     }
 
+                    if (controller.filteredProducts.isEmpty) {
+                      return const Center(
+                        child: Padding(
+                          padding: EdgeInsets.all(20),
+                          child: Column(
+                            children: [
+                              Icon(
+                                Icons.search_off_rounded,
+                                size: 50,
+                                color: HomePageMobile.greyText,
+                              ),
+                              SizedBox(height: 8),
+                              Text(
+                                'No results found',
+                                style: TextStyle(
+                                  fontSize: 14,
+                                  fontWeight: FontWeight.w600,
+                                  color: HomePageMobile.darkText,
+                                ),
+                              ),
+                              SizedBox(height: 4),
+                              Text(
+                                'Try a different search term',
+                                style: TextStyle(
+                                  fontSize: 12,
+                                  color: HomePageMobile.greyText,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      );
+                    }
+
                     return Column(
-                      children: controller.products.map((product) {
+                      children: controller.filteredProducts.map((product) {
                         final String imageUrl = HomeController.getImageUrl(
                           product,
                         );
@@ -323,6 +372,9 @@ class Home extends StatelessWidget {
                         final double price = (product['rentalPrice'] ?? 0)
                             .toDouble();
                         final String city = product['pickupCity'] ?? 'Unknown';
+                        final String productId = product['id'] ?? '';
+                        final bool isWishlisted =
+                            product['isWishlist'] ?? false;
 
                         return Padding(
                           padding: const EdgeInsets.only(bottom: 16),
@@ -339,19 +391,23 @@ class Home extends StatelessWidget {
                               distance: '0 km',
                               price: '${price.toStringAsFixed(0)}/day',
                               availability: 'Available',
+                              isFavorite: isWishlisted,
                               onpress: () {
                                 Get.toNamed(
                                   '/details',
-                                  arguments: {'id': product['id']},
+                                  arguments: {'id': productId},
                                 );
                               },
                               onRentNow: () {
                                 Get.toNamed(
                                   '/booking-summary',
-                                  arguments: {'id': product['id']},
+                                  arguments: {'id': productId},
                                 );
                               },
-                              onFavorite: () {},
+                              onFavorite: () {
+                                controller.toggleWishlist(
+                                    productId, isWishlisted);
+                              },
                             ),
                           ),
                         );

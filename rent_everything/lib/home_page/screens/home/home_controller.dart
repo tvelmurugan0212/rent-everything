@@ -12,7 +12,10 @@ class HomeController extends GetxController {
   // ============================================================
 
   final RxList<Map<String, dynamic>> products = <Map<String, dynamic>>[].obs;
+  final RxList<Map<String, dynamic>> filteredProducts =
+      <Map<String, dynamic>>[].obs;
   final RxBool isLoadingProducts = true.obs;
+  final RxString searchQuery = ''.obs;
 
   @override
   void onInit() {
@@ -22,6 +25,32 @@ class HomeController extends GetxController {
 
   void changeBanner(int index) {
     bannerIndex.value = index;
+  }
+
+  void onSearchChanged(String query) {
+    searchQuery.value = query;
+    filterProducts();
+  }
+
+  void filterProducts() {
+    final String query = searchQuery.value.toLowerCase().trim();
+
+    if (query.isEmpty) {
+      filteredProducts.value = List.from(products);
+      return;
+    }
+
+    filteredProducts.value = products.where((product) {
+      final String name = (product['productName'] ?? '').toLowerCase();
+      final String category = (product['category'] ?? '').toLowerCase();
+      final String brand = (product['brand'] ?? '').toLowerCase();
+      final String city = (product['pickupCity'] ?? '').toLowerCase();
+
+      return name.contains(query) ||
+          category.contains(query) ||
+          brand.contains(query) ||
+          city.contains(query);
+    }).toList();
   }
 
   void fetchProducts() {
@@ -34,12 +63,20 @@ class HomeController extends GetxController {
         products.value = snapshot.docs
             .map((doc) => {'id': doc.id, ...doc.data()})
             .toList();
+        filterProducts();
         isLoadingProducts.value = false;
       },
       onError: (error) {
         isLoadingProducts.value = false;
       },
     );
+  }
+
+  Future<void> toggleWishlist(String productId, bool currentValue) async {
+    await FirebaseFirestore.instance
+        .collection('products')
+        .doc(productId)
+        .update({'isWishlist': !currentValue});
   }
 
   static String getImageUrl(Map<String, dynamic> product) {
