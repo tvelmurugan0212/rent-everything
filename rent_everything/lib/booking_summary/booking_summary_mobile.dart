@@ -7,16 +7,16 @@ import '../common_widgets/rental_cards.dart';
 import 'booking_summary_controller.dart';
 
 class BookingSummaryMobile extends StatelessWidget {
-  BookingSummaryMobile({super.key});
+  const BookingSummaryMobile({super.key});
 
   static const Color primaryColor = Color(0xFF0674A1);
   static const Color darkText = Color(0xFF202938);
   static const Color greyText = Color(0xFF5F5F5F);
 
-  final controller = Get.put(BookingSummaryController());
-
   @override
   Widget build(BuildContext context) {
+    final controller = Get.find<BookingSummaryController>();
+
     return Scaffold(
       backgroundColor: Colors.white,
       body: SafeArea(
@@ -129,7 +129,12 @@ class BookingSummaryMobile extends StatelessWidget {
                       () => _dateSection(
                         title: 'Pickup',
                         date: controller.pickupText,
-                        onTap: () => controller.selectPickupDate(context),
+                        hasError: controller.showDateErrors.value &&
+                            controller.pickupDate.value == null,
+                        onTap: () {
+                          controller.showDateErrors.value = false;
+                          controller.selectPickupDate(context);
+                        },
                       ),
                     ),
 
@@ -139,7 +144,12 @@ class BookingSummaryMobile extends StatelessWidget {
                       () => _dateSection(
                         title: 'Return',
                         date: controller.returnText,
-                        onTap: () => controller.selectReturnDate(context),
+                        hasError: controller.showDateErrors.value &&
+                            controller.returnDate.value == null,
+                        onTap: () {
+                          controller.showDateErrors.value = false;
+                          controller.selectReturnDate(context);
+                        },
                       ),
                     ),
 
@@ -207,8 +217,29 @@ class BookingSummaryMobile extends StatelessWidget {
                           height: 45,
                           child: ElevatedButton(
                             onPressed: () {
-                              Get.toNamed('/checkout',
-                                  arguments: {'id': controller.productId});
+                              final hasPickup =
+                                  controller.pickupDate.value != null;
+                              final hasReturn =
+                                  controller.returnDate.value != null;
+
+                              if (!hasPickup || !hasReturn) {
+                                controller.showDateErrors.value = true;
+                                Get.snackbar(
+                                  'Missing Dates',
+                                  'Please select both pickup and return dates.',
+                                  snackPosition: SnackPosition.BOTTOM,
+                                );
+                                return;
+                              }
+
+                              controller.showDateErrors.value = false;
+                              Get.toNamed('/checkout', arguments: {
+                                'id': controller.productId,
+                                'pickupDate': controller
+                                    .pickupDate.value?.toIso8601String(),
+                                'returnDate': controller
+                                    .returnDate.value?.toIso8601String(),
+                              });
                             },
                             style: ElevatedButton.styleFrom(
                               backgroundColor: primaryColor,
@@ -244,6 +275,7 @@ class BookingSummaryMobile extends StatelessWidget {
     required String title,
     required String date,
     required VoidCallback onTap,
+    bool hasError = false,
   }) {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 16),
@@ -306,6 +338,17 @@ class BookingSummaryMobile extends StatelessWidget {
               ),
             ),
           ),
+          if (hasError)
+            const Padding(
+              padding: EdgeInsets.only(top: 6, left: 4),
+              child: Text(
+                'This field is required',
+                style: TextStyle(
+                  fontSize: 12,
+                  color: Colors.red,
+                ),
+              ),
+            ),
         ],
       ),
     );

@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:convert';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -10,8 +11,10 @@ class BookingSummaryController extends GetxController {
   final returnDate = Rxn<DateTime>();
   final Rxn<Map<String, dynamic>> product = Rxn<Map<String, dynamic>>();
   final RxBool isLoading = true.obs;
+  final RxBool showDateErrors = false.obs;
 
   final dateFormat = DateFormat('dd MMM yyyy');
+  StreamSubscription<DocumentSnapshot<Map<String, dynamic>>>? _productSub;
 
   String get productId {
     final args = Get.arguments;
@@ -32,7 +35,7 @@ class BookingSummaryController extends GetxController {
   }
 
   void fetchProduct() {
-    FirebaseFirestore.instance
+    _productSub = FirebaseFirestore.instance
         .collection('products')
         .doc(productId)
         .snapshots()
@@ -137,5 +140,11 @@ class BookingSummaryController extends GetxController {
       return 'Select return date';
     }
     return dateFormat.format(returnDate.value!);
+  }
+
+  @override
+  void onClose() {
+    _productSub?.cancel();
+    super.onClose();
   }
 }

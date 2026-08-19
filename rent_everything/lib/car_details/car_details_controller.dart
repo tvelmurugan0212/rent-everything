@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:convert';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -10,6 +11,8 @@ class CarDetailsController extends GetxController {
 
   final Rxn<Map<String, dynamic>> product = Rxn<Map<String, dynamic>>();
   final RxBool isLoading = true.obs;
+
+  StreamSubscription<DocumentSnapshot<Map<String, dynamic>>>? _productSub;
 
   String get productId {
     final args = Get.arguments;
@@ -34,7 +37,7 @@ class CarDetailsController extends GetxController {
   }
 
   void fetchProduct() {
-    FirebaseFirestore.instance
+    _productSub = FirebaseFirestore.instance
         .collection('products')
         .doc(productId)
         .snapshots()
@@ -96,6 +99,7 @@ class CarDetailsController extends GetxController {
 
   @override
   void onClose() {
+    _productSub?.cancel();
     imageController.dispose();
     super.onClose();
   }

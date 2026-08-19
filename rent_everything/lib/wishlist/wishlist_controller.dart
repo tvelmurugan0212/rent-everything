@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:get/get.dart';
 
@@ -6,6 +8,8 @@ class WishlistController extends GetxController {
       <Map<String, dynamic>>[].obs;
   final RxBool isLoading = true.obs;
 
+  StreamSubscription<QuerySnapshot<Map<String, dynamic>>>? _wishlistSub;
+
   @override
   void onInit() {
     super.onInit();
@@ -13,7 +17,7 @@ class WishlistController extends GetxController {
   }
 
   void fetchWishlist() {
-    FirebaseFirestore.instance
+    _wishlistSub = FirebaseFirestore.instance
         .collection('products')
         .where('isWishlist', isEqualTo: true)
         .snapshots()
@@ -39,5 +43,11 @@ class WishlistController extends GetxController {
 
   static String getImageUrl(Map<String, dynamic> product) {
     return product['imageUrl'] ?? '';
+  }
+
+  @override
+  void onClose() {
+    _wishlistSub?.cancel();
+    super.onClose();
   }
 }

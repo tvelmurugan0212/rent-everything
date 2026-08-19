@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:convert';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -16,6 +17,8 @@ class HomeController extends GetxController {
       <Map<String, dynamic>>[].obs;
   final RxBool isLoadingProducts = true.obs;
   final RxString searchQuery = ''.obs;
+
+  StreamSubscription<QuerySnapshot<Map<String, dynamic>>>? _productsSub;
 
   @override
   void onInit() {
@@ -54,7 +57,7 @@ class HomeController extends GetxController {
   }
 
   void fetchProducts() {
-    FirebaseFirestore.instance
+    _productsSub = FirebaseFirestore.instance
         .collection('products')
         .orderBy('createdAt', descending: true)
         .snapshots()
@@ -112,5 +115,11 @@ class HomeController extends GetxController {
         fit: fit,
       );
     }
+  }
+
+  @override
+  void onClose() {
+    _productsSub?.cancel();
+    super.onClose();
   }
 }
