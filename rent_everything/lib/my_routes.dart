@@ -7,6 +7,7 @@ import 'package:rent_everything/register/register_responsive.dart';
 import 'package:rent_everything/review/review_responsive.dart';
 import 'package:rent_everything/verify_otp/verify_otp_responsive.dart';
 
+import 'booking_conform/booking_conform_responsive.dart';
 import 'booking_summary/booking_summary_responsive.dart';
 import 'categories/categories_responsive.dart';
 import 'checkout/checkout_responsive.dart';
@@ -33,4 +34,8 @@ var myRoutes = [
     page: () => const BookingSummaryResponsive(),
   ),
   GetPage(name: '/checkout', page: () => const CheckoutResponsive()),
+  GetPage(
+    name: '/booking-conform',
+    page: () => const BookingConformResponsive(),
+  ),
 ];

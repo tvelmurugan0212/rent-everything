@@ -1,7 +1,6 @@
 import 'dart:async';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 
@@ -48,16 +47,16 @@ class CheckoutController extends GetxController {
         .doc(_productId)
         .snapshots()
         .listen(
-      (docSnapshot) {
-        if (docSnapshot.exists) {
-          product.value = {'id': docSnapshot.id, ...docSnapshot.data()!};
-        }
-        isLoading.value = false;
-      },
-      onError: (error) {
-        isLoading.value = false;
-      },
-    );
+          (docSnapshot) {
+            if (docSnapshot.exists) {
+              product.value = {'id': docSnapshot.id, ...docSnapshot.data()!};
+            }
+            isLoading.value = false;
+          },
+          onError: (error) {
+            isLoading.value = false;
+          },
+        );
   }
 
   // --- Getters ---
@@ -140,7 +139,7 @@ class CheckoutController extends GetxController {
       return;
     }
 
-    _showSuccessDialog();
+    Get.offAllNamed('/booking-conform');
   }
 
   // Two ranges overlap when: newStart <= existingEnd AND newEnd >= existingStart
@@ -169,81 +168,6 @@ class CheckoutController extends GetxController {
     }
 
     return false;
-  }
-
-  void _showSuccessDialog() {
-    Get.dialog(
-      Dialog(
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
-        child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 32),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Container(
-                width: 70,
-                height: 70,
-                decoration: const BoxDecoration(
-                  color: Color(0xFFE8F5E9),
-                  shape: BoxShape.circle,
-                ),
-                child: const Icon(
-                  Icons.check_rounded,
-                  size: 40,
-                  color: Color(0xFF4CAF50),
-                ),
-              ),
-              const SizedBox(height: 20),
-              const Text(
-                'Booking Confirmed!',
-                style: TextStyle(
-                  fontSize: 20,
-                  fontWeight: FontWeight.w700,
-                  color: Color(0xFF202938),
-                ),
-              ),
-              const SizedBox(height: 10),
-              const Text(
-                'Your booking has been successfully placed.\nYou will receive a confirmation shortly.',
-                textAlign: TextAlign.center,
-                style: TextStyle(
-                  fontSize: 14,
-                  color: Color(0xFF5F5F5F),
-                  height: 1.5,
-                ),
-              ),
-              const SizedBox(height: 28),
-              SizedBox(
-                width: double.infinity,
-                height: 45,
-                child: ElevatedButton(
-                  onPressed: () {
-                    Get.back(); // close dialog
-                    Get.offAllNamed('/home'); // go to home
-                  },
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: const Color(0xFF0674A1),
-                    foregroundColor: Colors.white,
-                    elevation: 0,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(12),
-                    ),
-                  ),
-                  child: const Text(
-                    'Back to Home',
-                    style: TextStyle(
-                      fontSize: 14,
-                      fontWeight: FontWeight.w600,
-                    ),
-                  ),
-                ),
-              ),
-            ],
-          ),
-        ),
-      ),
-      barrierDismissible: false,
-    );
   }
 
   @override
