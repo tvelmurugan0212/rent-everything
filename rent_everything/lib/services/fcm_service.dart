@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:rent_everything/services/auth_service.dart';
@@ -22,6 +23,8 @@ class FcmService extends GetxController {
   }
 
   Future<void> _init() async {
+    if (kIsWeb) return;
+
     final settings = await _messaging.requestPermission(
       alert: true,
       badge: true,
