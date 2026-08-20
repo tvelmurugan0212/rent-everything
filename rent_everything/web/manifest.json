@@ -1,6 +1,6 @@
 {
-    "name": "rent_everything",
-    "short_name": "rent_everything",
+    "name": "Rent Everything",
+    "short_name": "Rent Everything",
     "start_url": ".",
     "display": "standalone",
     "background_color": "#0175C2",

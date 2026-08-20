@@ -2,11 +2,9 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:get/get_navigation/src/root/get_material_app.dart';
 import 'package:rent_everything/firebase_options.dart';
 import 'package:rent_everything/services/auth_service.dart';
 import 'package:rent_everything/services/fcm_service.dart';
-
 import 'my_routes.dart';
 
 @pragma('vm:entry-point')

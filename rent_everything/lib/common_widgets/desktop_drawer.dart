@@ -226,7 +226,7 @@ class DesktopDrawer extends StatelessWidget {
                 const SizedBox(width: 10),
 
                 const Text(
-                  'RentEverything',
+                  'Rent Everything',
                   style: TextStyle(
                     color: Colors.black,
                     fontSize: 16,
