@@ -1,8 +1,10 @@
 import 'dart:async';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/widgets.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
+import 'package:rent_everything/services/notification_service.dart';
 
 class CheckoutController extends GetxController {
   final selectedPayment = 'PhonePe'.obs;
@@ -110,25 +112,50 @@ class CheckoutController extends GetxController {
     }
 
     try {
-      await FirebaseFirestore.instance.collection('bookings').add({
-        'productId': _productId,
-        'productName': productName,
-        'imageUrl': imageUrl,
-        'rentalPrice': rentalPrice,
-        'securityDeposit': securityDeposit,
-        'pickupCity': city,
-        'pickupDate': pickupDate?.toIso8601String(),
-        'returnDate': returnDate?.toIso8601String(),
-        'numberOfDays': numberOfDays,
-        'rentalCharge': rentalCharge,
-        'serviceFee': serviceFee,
-        'totalAmount': totalAmount,
-        'paymentMethod': selectedPayment.value,
-        'status': 'confirmed',
-        'createdAt': FieldValue.serverTimestamp(),
-      });
+      final docRef = await FirebaseFirestore.instance
+          .collection('bookings')
+          .add({
+            'productId': _productId,
+            'productName': productName,
+            'imageUrl': imageUrl,
+            'rentalPrice': rentalPrice,
+            'securityDeposit': securityDeposit,
+            'pickupCity': city,
+            'pickupDate': pickupDate?.toIso8601String(),
+            'returnDate': returnDate?.toIso8601String(),
+            'numberOfDays': numberOfDays,
+            'rentalCharge': rentalCharge,
+            'serviceFee': serviceFee,
+            'totalAmount': totalAmount,
+            'paymentMethod': selectedPayment.value,
+            'renterId': 'user_002',
+            'ownerId': product.value?['ownerId'] ?? '',
+            'status': 'confirmed',
+            'createdAt': FieldValue.serverTimestamp(),
+          });
 
       isBooking.value = false;
+
+      var ownerId = product.value?['ownerId'] as String? ?? '';
+      debugPrint('Product ownerId: "$ownerId"');
+
+      if (ownerId.isEmpty) {
+        ownerId = 'user_001';
+        debugPrint('ownerId was empty, defaulting to: $ownerId');
+      }
+
+      await NotificationService().sendBookingNotification(
+        ownerId: ownerId,
+        productName: productName,
+        bookingId: docRef.id,
+        renterId: 'user_002',
+      );
+
+      await NotificationService().sendBookingConfirmation(
+        renterId: 'user_002',
+        productName: productName,
+        bookingId: docRef.id,
+      );
     } catch (e) {
       isBooking.value = false;
       Get.snackbar(

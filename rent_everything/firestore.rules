@@ -7,5 +7,11 @@ service cloud.firestore {
     match /bookings/{document=**} {
       allow read, write: if true;
     }
+    match /users/{document=**} {
+      allow read, write: if true;
+    }
+    match /notifications/{document=**} {
+      allow read, write: if true;
+    }
   }
 }

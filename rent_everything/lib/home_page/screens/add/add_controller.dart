@@ -389,6 +389,7 @@ class AddController extends GetxController {
         'pickupCity': pickupCityController.text.trim(),
         'condition': conditionController.text.trim(),
         'imageUrl': imageDataUrl,
+        'ownerId': 'user_001',
         'isWishlist': false,
         'createdAt': now,
         'updatedAt': now,
