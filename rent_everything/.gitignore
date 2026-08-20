@@ -43,3 +43,7 @@ app.*.map.json
 /android/app/debug
 /android/app/profile
 /android/app/release
+
+# Google service account credentials
+rent_everything/assets/google-service-account.json
+assets/google-service-account.json
