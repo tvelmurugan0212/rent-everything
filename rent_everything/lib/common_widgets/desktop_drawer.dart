@@ -1,23 +1,45 @@
 // ignore_for_file: library_private_types_in_public_api
 
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 
 class DesktopLayout extends StatelessWidget {
-  final int selectedIndex;
   final Widget child;
   final String pageTitle;
 
   const DesktopLayout({
     super.key,
-    required this.selectedIndex,
     required this.child,
     required this.pageTitle,
   });
 
   static const Color primaryColor = Color(0xFF0674A1);
 
+  static const List<String> drawerRoutes = [
+    '/home',
+    '/profile',
+    '',
+    '/categories',
+    '',
+    '/earnings',
+    '',
+    '/notifications',
+    '/settings',
+  ];
+
+  static int selectedIndexFromRoute(String route) {
+    for (int i = 0; i < drawerRoutes.length; i++) {
+      if (drawerRoutes[i].isNotEmpty && route.startsWith(drawerRoutes[i])) {
+        return i;
+      }
+    }
+    return -1;
+  }
+
   @override
   Widget build(BuildContext context) {
+    final selectedIndex = selectedIndexFromRoute(Get.currentRoute);
+
     return Scaffold(
       backgroundColor: const Color(0xFFF8FAFC),
       body: Row(
@@ -28,7 +50,10 @@ class DesktopLayout extends StatelessWidget {
           DesktopDrawer(
             selectedIndex: selectedIndex,
             onItemSelected: (index) {
-              // Add your navigation here
+              final route = drawerRoutes[index];
+              if (route.isNotEmpty && Get.currentRoute != route) {
+                Get.offAllNamed(route);
+              }
             },
             onLogout: () {
               // Logout logic

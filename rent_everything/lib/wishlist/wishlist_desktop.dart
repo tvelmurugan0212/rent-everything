@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import '../common_widgets/desktop_drawer.dart';
+
 class WishlistDesktop extends StatelessWidget {
   const WishlistDesktop({super.key});
 
@@ -9,57 +11,43 @@ class WishlistDesktop extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: const Color(0xFFF8FAFC),
-      appBar: AppBar(
-        backgroundColor: Colors.white,
-        elevation: 0,
-        title: const Text(
-          'Wishlist',
-          style: TextStyle(
-            color: darkText,
-            fontSize: 28,
-            fontWeight: FontWeight.w700,
-          ),
-        ),
-      ),
-      body: SafeArea(
-        child: Center(
-          child: SizedBox(
-            width: 1200,
-            child: GridView.count(
-              padding: const EdgeInsets.all(28),
-              crossAxisCount: 2,
-              crossAxisSpacing: 20,
-              mainAxisSpacing: 20,
-              childAspectRatio: 2.6,
-              children: const [
-                WishlistItemCard(
-                  title: 'Royal Enfield Classic 350',
-                  subtitle: '₹1,200/day',
-                  image: 'assets/images/car.png',
-                  tag: 'Hot Deal',
-                ),
-                WishlistItemCard(
-                  title: 'Canon EOS R50',
-                  subtitle: '₹1,800/day',
-                  image: 'assets/images/camera.png',
-                  tag: 'Popular',
-                ),
-                WishlistItemCard(
-                  title: 'Roadster Bike',
-                  subtitle: '₹950/day',
-                  image: 'assets/images/bike.png',
-                  tag: 'New',
-                ),
-                WishlistItemCard(
-                  title: 'MacBook Pro 14',
-                  subtitle: '₹2,500/day',
-                  image: 'assets/images/laptop.png',
-                  tag: 'Premium',
-                ),
-              ],
-            ),
+    return DesktopLayout(
+      pageTitle: 'Wishlist',
+      child: Center(
+        child: SizedBox(
+          width: 1200,
+          child: GridView.count(
+            padding: const EdgeInsets.all(28),
+            crossAxisCount: 2,
+            crossAxisSpacing: 20,
+            mainAxisSpacing: 20,
+            childAspectRatio: 2.6,
+            children: const [
+              WishlistItemCard(
+                title: 'Royal Enfield Classic 350',
+                subtitle: '₹1,200/day',
+                image: 'assets/images/car.png',
+                tag: 'Hot Deal',
+              ),
+              WishlistItemCard(
+                title: 'Canon EOS R50',
+                subtitle: '₹1,800/day',
+                image: 'assets/images/camera.png',
+                tag: 'Popular',
+              ),
+              WishlistItemCard(
+                title: 'Roadster Bike',
+                subtitle: '₹950/day',
+                image: 'assets/images/bike.png',
+                tag: 'New',
+              ),
+              WishlistItemCard(
+                title: 'MacBook Pro 14',
+                subtitle: '₹2,500/day',
+                image: 'assets/images/laptop.png',
+                tag: 'Premium',
+              ),
+            ],
           ),
         ),
       ),

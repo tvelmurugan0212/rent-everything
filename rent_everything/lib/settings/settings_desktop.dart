@@ -1,233 +1,173 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+
+import '../common_widgets/desktop_drawer.dart';
+import 'settings_controller.dart';
 
 class SettingsDesktop extends StatelessWidget {
   const SettingsDesktop({super.key});
 
   static const Color primaryColor = Color(0xFF0674A1);
-  static const Color darkText = Color(0xFF202938);
-  static const Color greyText = Color(0xFF5F5F5F);
+  static const Color darkText = Color(0xFF111111);
+  static const Color greyText = Color(0xFF6B7280);
+  static const Color backgroundColor = Color(0xFFF8FAFC);
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: const Color(0xFFF8FAFC),
-      appBar: AppBar(
-        backgroundColor: Colors.white,
-        elevation: 0,
-        title: const Text(
-          'Settings',
-          style: TextStyle(
-            color: darkText,
-            fontSize: 28,
-            fontWeight: FontWeight.w700,
-          ),
-        ),
-      ),
-      body: SafeArea(
-        child: Center(
+    final controller = Get.put(SettingsController());
+
+    return DesktopLayout(
+      pageTitle: 'Settings',
+      child: Container(
+        color: backgroundColor,
+        child: Align(
+          alignment: Alignment.topLeft,
           child: SizedBox(
-            width: 1000,
+            width: 810,
             child: ListView(
-              padding: const EdgeInsets.all(28),
+              padding: const EdgeInsets.fromLTRB(48, 44, 0, 40),
               children: [
-                // Account Section
-                const SettingsSectionTitle(title: 'Account'),
-                const SizedBox(height: 16),
-                const SettingsItemTile(
-                  icon: Icons.person_outline,
-                  title: 'Edit Profile',
-                  subtitle: 'Update your profile information',
-                ),
-                const SizedBox(height: 14),
-                const SettingsItemTile(
-                  icon: Icons.lock_outline,
-                  title: 'Change Password',
-                  subtitle: 'Update your password',
-                ),
-                const SizedBox(height: 28),
-                // Preferences Section
-                const SettingsSectionTitle(title: 'Preferences'),
-                const SizedBox(height: 16),
-                const SettingsToggleTile(
-                  icon: Icons.notifications_outlined,
-                  title: 'Push Notifications',
-                  subtitle: 'Receive rental updates and offers',
-                ),
-                const SizedBox(height: 14),
-                const SettingsToggleTile(
-                  icon: Icons.mail_outline,
-                  title: 'Email Notifications',
-                  subtitle: 'Receive emails about bookings',
-                ),
-                const SizedBox(height: 28),
-                // Support Section
-                const SettingsSectionTitle(title: 'Support'),
-                const SizedBox(height: 16),
-                const SettingsItemTile(
-                  icon: Icons.help_outline,
-                  title: 'Help & Support',
-                  subtitle: 'Contact our support team',
-                ),
-                const SizedBox(height: 14),
-                const SettingsItemTile(
-                  icon: Icons.privacy_tip_outlined,
-                  title: 'Privacy Policy',
-                  subtitle: 'Read our privacy guidelines',
-                ),
-                const SizedBox(height: 14),
-                const SettingsItemTile(
-                  icon: Icons.description_outlined,
-                  title: 'Terms & Conditions',
-                  subtitle: 'Review our terms',
-                ),
-                const SizedBox(height: 28),
-                // App Section
-                const SettingsSectionTitle(title: 'About'),
-                const SizedBox(height: 16),
-                Container(
-                  padding: const EdgeInsets.all(16),
-                  decoration: BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.circular(16),
-                  ),
-                  child: const Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        'App Version',
-                        style: TextStyle(
-                          color: darkText,
-                          fontSize: 18,
-                          fontWeight: FontWeight.w700,
-                        ),
-                      ),
-                      SizedBox(height: 10),
-                      Text(
-                        'v1.0.0',
-                        style: TextStyle(
-                          color: greyText,
-                          fontSize: 15,
-                          fontWeight: FontWeight.w400,
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-                const SizedBox(height: 28),
-                // Logout Button
-                SizedBox(
-                  width: double.infinity,
-                  child: ElevatedButton(
-                    onPressed: () {},
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.red.shade50,
-                      elevation: 0,
-                      padding: const EdgeInsets.symmetric(vertical: 18),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(16),
-                      ),
-                    ),
-                    child: const Text(
-                      'Logout',
-                      style: TextStyle(
-                        color: Colors.red,
-                        fontSize: 20,
-                        fontWeight: FontWeight.w700,
-                      ),
-                    ),
-                  ),
-                ),
-                const SizedBox(height: 28),
-              ],
-            ),
-          ),
-        ),
-      ),
-    );
-  }
-}
-
-class SettingsSectionTitle extends StatelessWidget {
-  final String title;
-
-  const SettingsSectionTitle({super.key, required this.title});
-
-  @override
-  Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 4),
-      child: Text(
-        title,
-        style: const TextStyle(
-          color: Color(0xFF202938),
-          fontSize: 18,
-          fontWeight: FontWeight.w700,
-        ),
-      ),
-    );
-  }
-}
-
-class SettingsItemTile extends StatelessWidget {
-  final IconData icon;
-  final String title;
-  final String subtitle;
-
-  const SettingsItemTile({
-    super.key,
-    required this.icon,
-    required this.title,
-    required this.subtitle,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.all(16),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(16),
-      ),
-      child: Row(
-        children: [
-          Container(
-            width: 56,
-            height: 56,
-            decoration: BoxDecoration(
-              color: const Color(0xFFE0F2FE),
-              borderRadius: BorderRadius.circular(14),
-            ),
-            child: Icon(icon, color: const Color(0xFF0674A1), size: 28),
-          ),
-          const SizedBox(width: 16),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  title,
-                  style: const TextStyle(
-                    color: Color(0xFF202938),
-                    fontSize: 18,
+                const Text(
+                  'Settings',
+                  style: TextStyle(
+                    color: darkText,
+                    fontSize: 28,
                     fontWeight: FontWeight.w700,
                   ),
                 ),
                 const SizedBox(height: 8),
-                Text(
-                  subtitle,
-                  style: const TextStyle(
-                    color: Color(0xFF5F5F5F),
+                const Text(
+                  'Manage your platform preferences',
+                  style: TextStyle(
+                    color: greyText,
                     fontSize: 15,
                     fontWeight: FontWeight.w400,
                   ),
                 ),
+                const SizedBox(height: 44),
+                const Text(
+                  'General',
+                  style: TextStyle(
+                    color: darkText,
+                    fontSize: 22,
+                    fontWeight: FontWeight.w700,
+                  ),
+                ),
+                const SizedBox(height: 22),
+                const SettingsGroup(
+                  children: [
+                    SettingsArrowRow(title: 'Platform Name'),
+                    SettingsArrowRow(title: 'Language'),
+                    SettingsArrowRow(title: 'Currency'),
+                  ],
+                ),
+                const SizedBox(height: 40),
+                const Text(
+                  'Notifications',
+                  style: TextStyle(
+                    color: darkText,
+                    fontSize: 22,
+                    fontWeight: FontWeight.w700,
+                  ),
+                ),
+                const SizedBox(height: 22),
+                SettingsGroup(
+                  children: [
+                    Obx(
+                      () => SettingsSwitchRow(
+                        title: 'Email Notifications',
+                        value: controller.emailNotifications.value,
+                        onChanged: controller.toggleEmail,
+                      ),
+                    ),
+                    Obx(
+                      () => SettingsSwitchRow(
+                        title: 'Booking Notifications',
+                        value: controller.bookingNotifications.value,
+                        onChanged: controller.toggleBooking,
+                      ),
+                    ),
+                    Obx(
+                      () => SettingsSwitchRow(
+                        title: 'Payment Notifications',
+                        value: controller.paymentNotifications.value,
+                        onChanged: controller.togglePayment,
+                      ),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 40),
+                const Text(
+                  'Security',
+                  style: TextStyle(
+                    color: darkText,
+                    fontSize: 22,
+                    fontWeight: FontWeight.w700,
+                  ),
+                ),
+                const SizedBox(height: 22),
+                const SettingsGroup(
+                  children: [
+                    SettingsArrowRow(title: 'Change Password'),
+                    SettingsArrowRow(title: 'Two-Factor Auth'),
+                    SettingsArrowRow(title: 'Payment Notifications'),
+                  ],
+                ),
               ],
             ),
           ),
+        ),
+      ),
+    );
+  }
+}
+
+class SettingsGroup extends StatelessWidget {
+  final List<Widget> children;
+
+  const SettingsGroup({super.key, required this.children});
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(17),
+      ),
+      child: Column(children: children),
+    );
+  }
+}
+
+class SettingsArrowRow extends StatelessWidget {
+  final String title;
+
+  const SettingsArrowRow({super.key, required this.title});
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      height: 62,
+      margin: const EdgeInsets.symmetric(horizontal: 26),
+      decoration: const BoxDecoration(
+        border: Border(bottom: BorderSide(color: Color(0xFFD9D9D9), width: 1)),
+      ),
+      child: Row(
+        children: [
+          Expanded(
+            child: Text(
+              title,
+              style: const TextStyle(
+                color: Color(0xFF111111),
+                fontSize: 15,
+                fontWeight: FontWeight.w400,
+              ),
+            ),
+          ),
           const Icon(
-            Icons.arrow_forward_ios_rounded,
-            size: 20,
-            color: Color(0xFF9CA3AF),
+            Icons.chevron_right_rounded,
+            size: 22,
+            color: Colors.black,
           ),
         ],
       ),
@@ -235,77 +175,49 @@ class SettingsItemTile extends StatelessWidget {
   }
 }
 
-class SettingsToggleTile extends StatefulWidget {
-  final IconData icon;
+class SettingsSwitchRow extends StatelessWidget {
   final String title;
-  final String subtitle;
+  final bool value;
+  final ValueChanged<bool> onChanged;
 
-  const SettingsToggleTile({
+  const SettingsSwitchRow({
     super.key,
-    required this.icon,
     required this.title,
-    required this.subtitle,
+    required this.value,
+    required this.onChanged,
   });
-
-  @override
-  State<SettingsToggleTile> createState() => _SettingsToggleTileState();
-}
-
-class _SettingsToggleTileState extends State<SettingsToggleTile> {
-  bool isEnabled = true;
 
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.all(16),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(16),
+      height: 62,
+      margin: const EdgeInsets.symmetric(horizontal: 26),
+      decoration: const BoxDecoration(
+        border: Border(bottom: BorderSide(color: Color(0xFFD9D9D9), width: 1)),
       ),
       child: Row(
         children: [
-          Container(
-            width: 56,
-            height: 56,
-            decoration: BoxDecoration(
-              color: const Color(0xFFE0F2FE),
-              borderRadius: BorderRadius.circular(14),
-            ),
-            child: Icon(widget.icon, color: const Color(0xFF0674A1), size: 28),
-          ),
-          const SizedBox(width: 16),
           Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  widget.title,
-                  style: const TextStyle(
-                    color: Color(0xFF202938),
-                    fontSize: 18,
-                    fontWeight: FontWeight.w700,
-                  ),
-                ),
-                const SizedBox(height: 8),
-                Text(
-                  widget.subtitle,
-                  style: const TextStyle(
-                    color: Color(0xFF5F5F5F),
-                    fontSize: 15,
-                    fontWeight: FontWeight.w400,
-                  ),
-                ),
-              ],
+            child: Text(
+              title,
+              style: const TextStyle(
+                color: Color(0xFF111111),
+                fontSize: 15,
+                fontWeight: FontWeight.w400,
+              ),
             ),
           ),
-          Switch(
-            value: isEnabled,
-            onChanged: (value) {
-              setState(() {
-                isEnabled = value;
-              });
-            },
-            activeThumbColor: const Color(0xFF0674A1),
+          Transform.scale(
+            scale: 0.78,
+            child: Switch(
+              value: value,
+              onChanged: onChanged,
+              activeThumbColor: Colors.white,
+              activeTrackColor: const Color(0xFF2FC45B),
+              inactiveThumbColor: Colors.white,
+              inactiveTrackColor: const Color(0xFFD1D5DB),
+              materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+            ),
           ),
         ],
       ),

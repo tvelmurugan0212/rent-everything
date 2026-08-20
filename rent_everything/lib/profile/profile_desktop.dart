@@ -1,171 +1,414 @@
 import 'package:flutter/material.dart';
+import '../common_widgets/desktop_drawer.dart';
 
 class ProfileDesktop extends StatelessWidget {
   const ProfileDesktop({super.key});
 
   static const Color primaryColor = Color(0xFF0674A1);
-  static const Color darkText = Color(0xFF000000);
+  static const Color darkText = Color(0xFF111111);
   static const Color greyText = Color(0xFF6B7280);
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: const Color(0xFFF8FAFC),
-      appBar: AppBar(
-        backgroundColor: Colors.white,
-        elevation: 0,
-        title: const Text(
-          'Profile',
-          style: TextStyle(
-            color: darkText,
-            fontSize: 28,
-            fontWeight: FontWeight.w700,
+    return DesktopLayout(
+      pageTitle: 'Users',
+      child: Container(
+        color: const Color(0xFFF8FAFC),
+        child: SingleChildScrollView(
+          padding: const EdgeInsets.fromLTRB(55, 46, 55, 35),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              // =========================
+              // TITLE
+              // =========================
+              const Text(
+                'Users',
+                style: TextStyle(
+                  fontSize: 28,
+                  fontWeight: FontWeight.w700,
+                  color: darkText,
+                ),
+              ),
+
+              const SizedBox(height: 8),
+
+              const Text(
+                'Manage renters and lenders',
+                style: TextStyle(fontSize: 14, color: greyText),
+              ),
+
+              const SizedBox(height: 40),
+
+              // =========================
+              // STAT CARDS
+              // =========================
+              Row(
+                children: const [
+                  Expanded(
+                    child: UserStatCard(title: 'Total Users', value: '1,248'),
+                  ),
+                  SizedBox(width: 40),
+                  Expanded(
+                    child: UserStatCard(title: 'Renters', value: '320'),
+                  ),
+                  SizedBox(width: 40),
+                  Expanded(
+                    child: UserStatCard(title: 'Lenders', value: '850'),
+                  ),
+                  SizedBox(width: 40),
+                  Expanded(
+                    child: UserStatCard(title: 'Suspended', value: '78'),
+                  ),
+                ],
+              ),
+
+              const SizedBox(height: 46),
+
+              // =========================
+              // ALL USERS
+              // =========================
+              const Text(
+                'All Users',
+                style: TextStyle(
+                  fontSize: 22,
+                  fontWeight: FontWeight.w700,
+                  color: darkText,
+                ),
+              ),
+
+              const SizedBox(height: 30),
+
+              // =========================
+              // SEARCH + FILTER
+              // =========================
+              Row(
+                children: [
+                  Container(
+                    width: 410,
+                    height: 44,
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      border: Border.all(color: const Color(0xFFD1D5DB)),
+                      borderRadius: BorderRadius.circular(22),
+                    ),
+                    child: const TextField(
+                      style: TextStyle(fontSize: 14),
+                      decoration: InputDecoration(
+                        hintText: 'Search by name or email',
+                        hintStyle: TextStyle(
+                          color: Color(0xFFB5B5B5),
+                          fontSize: 14,
+                        ),
+                        prefixIcon: Icon(
+                          Icons.search_rounded,
+                          size: 22,
+                          color: Color(0xFF8B8B8B),
+                        ),
+                        border: InputBorder.none,
+                        contentPadding: EdgeInsets.symmetric(vertical: 11),
+                      ),
+                    ),
+                  ),
+
+                  const Spacer(),
+
+                  Container(
+                    height: 41,
+                    width: 106,
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      border: Border.all(color: Colors.black),
+                      borderRadius: BorderRadius.circular(9),
+                    ),
+                    child: const Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Text(
+                          'Filter',
+                          style: TextStyle(fontSize: 14, color: Colors.black),
+                        ),
+                        SizedBox(width: 15),
+                        Icon(Icons.keyboard_arrow_down_rounded, size: 20),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+
+              const SizedBox(height: 40),
+
+              // =========================
+              // USERS TABLE
+              // =========================
+              const UsersTable(),
+            ],
           ),
         ),
       ),
-      body: SafeArea(
-        child: Center(
-          child: SizedBox(
-            width: 1100,
+    );
+  }
+}
+
+// ============================================================
+// STAT CARD
+// ============================================================
+
+class UserStatCard extends StatelessWidget {
+  final String title;
+  final String value;
+
+  const UserStatCard({super.key, required this.title, required this.value});
+
+  static const Color primaryColor = Color(0xFF0674A1);
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      height: 112,
+      decoration: BoxDecoration(
+        color: primaryColor,
+        borderRadius: BorderRadius.circular(9),
+      ),
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Text(
+            title,
+            style: const TextStyle(
+              color: Colors.white,
+              fontSize: 16,
+              fontWeight: FontWeight.w700,
+            ),
+          ),
+          const SizedBox(height: 16),
+          Text(
+            value,
+            style: const TextStyle(
+              color: Colors.white,
+              fontSize: 16,
+              fontWeight: FontWeight.w400,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+// ============================================================
+// USERS TABLE
+// ============================================================
+
+class UsersTable extends StatelessWidget {
+  const UsersTable({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      width: double.infinity,
+      padding: const EdgeInsets.fromLTRB(28, 24, 28, 12),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(16),
+      ),
+      child: Column(
+        children: [
+          const _UserTableHeader(),
+
+          const Divider(height: 22, color: Color(0xFFD1D5DB)),
+
+          const UserTableRow(
+            name: 'Rahul Kumar',
+            email: 'rahul@email.com',
+            role: 'Renter',
+            joined: 'Aug 08',
+            status: 'Active',
+            statusColor: Color(0xFF8756F5),
+          ),
+
+          const UserTableRow(
+            name: 'Amith Kumar',
+            email: 'amith@email.com',
+            role: 'Lender',
+            joined: 'Aug 08',
+            status: 'Confirmed',
+            statusColor: Color(0xFF4285F4),
+          ),
+
+          const UserTableRow(
+            name: 'Priya Sharma',
+            email: 'priya@email.com',
+            role: 'Renter',
+            joined: 'Aug 07',
+            status: 'Pending',
+            statusColor: Color(0xFFFFA000),
+          ),
+
+          const UserTableRow(
+            name: 'Arun Kumar',
+            email: 'arun@email.com',
+            role: 'Lender',
+            joined: 'Aug 06',
+            status: 'Cancelled',
+            statusColor: Color(0xFFDC2626),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+// ============================================================
+// TABLE HEADER
+// ============================================================
+
+class _UserTableHeader extends StatelessWidget {
+  const _UserTableHeader();
+
+  @override
+  Widget build(BuildContext context) {
+    return const Row(
+      children: [
+        Expanded(
+          child: Text(
+            'User',
+            style: TextStyle(fontSize: 16, fontWeight: FontWeight.w700),
+          ),
+        ),
+        Expanded(
+          child: Text(
+            'Email',
+            style: TextStyle(fontSize: 16, fontWeight: FontWeight.w700),
+          ),
+        ),
+        Expanded(
+          child: Text(
+            'Role',
+            style: TextStyle(fontSize: 16, fontWeight: FontWeight.w700),
+          ),
+        ),
+        Expanded(
+          child: Text(
+            'Joined',
+            style: TextStyle(fontSize: 16, fontWeight: FontWeight.w700),
+          ),
+        ),
+        Expanded(
+          child: Text(
+            'Status',
+            style: TextStyle(fontSize: 16, fontWeight: FontWeight.w700),
+          ),
+        ),
+        SizedBox(
+          width: 55,
+          child: Text(
+            'Action',
+            style: TextStyle(fontSize: 16, fontWeight: FontWeight.w700),
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+// ============================================================
+// TABLE ROW
+// ============================================================
+
+class UserTableRow extends StatelessWidget {
+  final String name;
+  final String email;
+  final String role;
+  final String joined;
+  final String status;
+  final Color statusColor;
+
+  const UserTableRow({
+    super.key,
+    required this.name,
+    required this.email,
+    required this.role,
+    required this.joined,
+    required this.status,
+    required this.statusColor,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      height: 68,
+      decoration: const BoxDecoration(
+        border: Border(bottom: BorderSide(color: Color(0xFFD1D5DB))),
+      ),
+      child: Row(
+        children: [
+          Expanded(
+            child: Text(
+              name,
+              style: const TextStyle(fontSize: 14, color: Colors.black),
+            ),
+          ),
+
+          Expanded(
+            child: Text(
+              email,
+              style: const TextStyle(fontSize: 14, color: Colors.black),
+            ),
+          ),
+
+          Expanded(
+            child: Text(
+              role,
+              style: const TextStyle(fontSize: 14, color: Colors.black),
+            ),
+          ),
+
+          Expanded(
+            child: Text(
+              joined,
+              style: const TextStyle(fontSize: 14, color: Colors.black),
+            ),
+          ),
+
+          Expanded(
             child: Row(
-              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Expanded(
-                  flex: 2,
-                  child: Container(
-                    margin: const EdgeInsets.all(28),
-                    padding: const EdgeInsets.all(28),
-                    decoration: BoxDecoration(
-                      color: Colors.white,
-                      borderRadius: BorderRadius.circular(24),
-                    ),
-                    child: Row(
-                      children: [
-                        ClipOval(
-                          child: Image.asset(
-                            'assets/images/profile.png',
-                            width: 120,
-                            height: 120,
-                            fit: BoxFit.cover,
-                          ),
-                        ),
-                        const SizedBox(width: 24),
-                        const Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              'Jack Smith',
-                              style: TextStyle(
-                                color: darkText,
-                                fontSize: 34,
-                                fontWeight: FontWeight.w700,
-                              ),
-                            ),
-                            SizedBox(height: 8),
-                            Text(
-                              '+91 98765 43210',
-                              style: TextStyle(color: greyText, fontSize: 18),
-                            ),
-                          ],
-                        ),
-                      ],
-                    ),
+                Container(
+                  width: 20,
+                  height: 20,
+                  decoration: BoxDecoration(
+                    color: statusColor,
+                    shape: BoxShape.circle,
                   ),
                 ),
-                Expanded(
-                  child: Container(
-                    margin: const EdgeInsets.only(
-                      top: 28,
-                      right: 28,
-                      bottom: 28,
-                    ),
-                    padding: const EdgeInsets.all(18),
-                    decoration: BoxDecoration(
-                      color: Colors.white,
-                      borderRadius: BorderRadius.circular(24),
-                    ),
-                    child: Column(
-                      children: const [
-                        ProfileTile(
-                          title: 'Edit Profile',
-                          icon: Icons.person_outline,
-                        ),
-                        ProfileTile(
-                          title: 'My Rentals',
-                          icon: Icons.car_rental,
-                        ),
-                        ProfileTile(
-                          title: 'Saved Items',
-                          icon: Icons.favorite_border,
-                        ),
-                        ProfileTile(
-                          title: 'Notifications',
-                          icon: Icons.notifications_none,
-                        ),
-                        ProfileTile(
-                          title: 'Help & Support',
-                          icon: Icons.help_outline,
-                        ),
-                        SizedBox(height: 10),
-                        LogoutButton(),
-                      ],
-                    ),
-                  ),
+                const SizedBox(width: 14),
+                Text(
+                  status,
+                  style: const TextStyle(fontSize: 16, color: Colors.black),
                 ),
               ],
             ),
           ),
-        ),
-      ),
-    );
-  }
-}
 
-class ProfileTile extends StatelessWidget {
-  final String title;
-  final IconData icon;
-
-  const ProfileTile({super.key, required this.title, required this.icon});
-
-  @override
-  Widget build(BuildContext context) {
-    return ListTile(
-      leading: Icon(icon, color: const Color(0xFF0674A1), size: 28),
-      title: Text(
-        title,
-        style: const TextStyle(
-          color: Color(0xFF111827),
-          fontSize: 16,
-          fontWeight: FontWeight.w500,
-        ),
-      ),
-      trailing: const Icon(Icons.arrow_forward_ios_rounded, size: 16),
-      onTap: () {},
-    );
-  }
-}
-
-class LogoutButton extends StatelessWidget {
-  const LogoutButton({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return SizedBox(
-      width: double.infinity,
-      child: ElevatedButton(
-        onPressed: () {},
-        style: ElevatedButton.styleFrom(
-          backgroundColor: const Color(0xFF0674A1),
-          foregroundColor: Colors.white,
-          padding: const EdgeInsets.symmetric(vertical: 16),
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(12),
+          SizedBox(
+            width: 55,
+            child: PopupMenuButton<String>(
+              padding: EdgeInsets.zero,
+              icon: const Icon(
+                Icons.more_vert_rounded,
+                size: 22,
+                color: Colors.black,
+              ),
+              onSelected: (value) {},
+              itemBuilder: (context) => const [
+                PopupMenuItem(value: 'view', child: Text('View')),
+                PopupMenuItem(value: 'edit', child: Text('Edit')),
+                PopupMenuItem(value: 'delete', child: Text('Delete')),
+              ],
+            ),
           ),
-        ),
-        child: const Text(
-          'Logout',
-          style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
-        ),
+        ],
       ),
     );
   }

@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+
+import 'settings_controller.dart';
 
 class SettingsTablet extends StatelessWidget {
   const SettingsTablet({super.key});
@@ -9,305 +12,178 @@ class SettingsTablet extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final controller = Get.put(SettingsController());
+
     return Scaffold(
-      backgroundColor: const Color(0xFFF8FAFC),
-      appBar: AppBar(
-        backgroundColor: Colors.white,
-        elevation: 0,
-        title: const Text(
-          'Settings',
-          style: TextStyle(
-            color: darkText,
-            fontSize: 24,
-            fontWeight: FontWeight.w700,
-          ),
-        ),
-      ),
+      backgroundColor: Colors.white,
       body: SafeArea(
-        child: Center(
-          child: SizedBox(
-            width: 700,
-            child: ListView(
-              padding: const EdgeInsets.all(24),
-              children: [
-                // Account Section
-                const SettingsSectionTitle(title: 'Account'),
-                const SizedBox(height: 14),
-                const SettingsItemTile(
-                  icon: Icons.person_outline,
-                  title: 'Edit Profile',
-                  subtitle: 'Update your profile information',
-                ),
-                const SizedBox(height: 12),
-                const SettingsItemTile(
-                  icon: Icons.lock_outline,
-                  title: 'Change Password',
-                  subtitle: 'Update your password',
-                ),
-                const SizedBox(height: 24),
-                // Preferences Section
-                const SettingsSectionTitle(title: 'Preferences'),
-                const SizedBox(height: 14),
-                const SettingsToggleTile(
-                  icon: Icons.notifications_outlined,
-                  title: 'Push Notifications',
-                  subtitle: 'Receive rental updates and offers',
-                ),
-                const SizedBox(height: 12),
-                const SettingsToggleTile(
-                  icon: Icons.mail_outline,
-                  title: 'Email Notifications',
-                  subtitle: 'Receive emails about bookings',
-                ),
-                const SizedBox(height: 24),
-                // Support Section
-                const SettingsSectionTitle(title: 'Support'),
-                const SizedBox(height: 14),
-                const SettingsItemTile(
-                  icon: Icons.help_outline,
-                  title: 'Help & Support',
-                  subtitle: 'Contact our support team',
-                ),
-                const SizedBox(height: 12),
-                const SettingsItemTile(
-                  icon: Icons.privacy_tip_outlined,
-                  title: 'Privacy Policy',
-                  subtitle: 'Read our privacy guidelines',
-                ),
-                const SizedBox(height: 12),
-                const SettingsItemTile(
-                  icon: Icons.description_outlined,
-                  title: 'Terms & Conditions',
-                  subtitle: 'Review our terms',
-                ),
-                const SizedBox(height: 24),
-                // App Section
-                const SettingsSectionTitle(title: 'About'),
-                const SizedBox(height: 14),
-                Container(
-                  padding: const EdgeInsets.all(14),
-                  decoration: BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.circular(14),
+        child: Column(
+          children: [
+            SizedBox(
+              height: 54,
+              child: Stack(
+                alignment: Alignment.center,
+                children: [
+                  Align(
+                    alignment: Alignment.centerLeft,
+                    child: IconButton(
+                      onPressed: () {
+                        Navigator.pop(context);
+                      },
+                      padding: const EdgeInsets.only(left: 8),
+                      icon: const Icon(
+                        Icons.arrow_back_ios_new_rounded,
+                        size: 20,
+                        color: Colors.black,
+                      ),
+                    ),
                   ),
-                  child: const Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
+                  const Text(
+                    'Settings',
+                    style: TextStyle(
+                      fontSize: 18,
+                      fontWeight: FontWeight.w700,
+                      color: Colors.black,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            Expanded(
+              child: ListView(
+                physics: const BouncingScrollPhysics(),
+                padding: const EdgeInsets.fromLTRB(16, 20, 16, 20),
+                children: [
+                  const Text(
+                    'Preferences',
+                    style: TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.w700,
+                      color: darkText,
+                    ),
+                  ),
+                  const SizedBox(height: 12),
+                  _sectionCard(
                     children: [
-                      Text(
-                        'App Version',
-                        style: TextStyle(
-                          color: darkText,
-                          fontSize: 16,
-                          fontWeight: FontWeight.w700,
+                      _settingsTile(title: 'Language', onTap: () {}),
+                      _settingsTile(
+                        title: 'Dark Mode',
+                        trailing: Obx(
+                          () => Transform.scale(
+                            scale: 0.7,
+                            child: Switch(
+                              padding: EdgeInsets.zero,
+                              value: controller.darkMode.value,
+                              onChanged: controller.toggleDarkMode,
+                              activeColor: Colors.white,
+                              activeTrackColor: const Color(0xFF2FC45B),
+                              inactiveThumbColor: Colors.white,
+                              inactiveTrackColor: const Color(0xFFD1D5DB),
+                              materialTapTargetSize:
+                                  MaterialTapTargetSize.shrinkWrap,
+                            ),
+                          ),
                         ),
                       ),
-                      SizedBox(height: 8),
-                      Text(
-                        'v1.0.0',
-                        style: TextStyle(
-                          color: greyText,
-                          fontSize: 14,
-                          fontWeight: FontWeight.w400,
-                        ),
+                      _settingsTile(
+                        title: 'Notification Settings',
+                        onTap: () {},
                       ),
                     ],
                   ),
-                ),
-                const SizedBox(height: 24),
-                // Logout Button
-                SizedBox(
-                  width: double.infinity,
-                  child: ElevatedButton(
-                    onPressed: () {},
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.red.shade50,
-                      elevation: 0,
-                      padding: const EdgeInsets.symmetric(vertical: 16),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(14),
-                      ),
-                    ),
-                    child: const Text(
-                      'Logout',
-                      style: TextStyle(
-                        color: Colors.red,
-                        fontSize: 18,
-                        fontWeight: FontWeight.w700,
-                      ),
+                  const SizedBox(height: 30),
+                  const Text(
+                    'Privacy & Security',
+                    style: TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.w700,
+                      color: darkText,
                     ),
                   ),
-                ),
-                const SizedBox(height: 24),
-              ],
+                  const SizedBox(height: 12),
+                  _sectionCard(
+                    children: [
+                      _settingsTile(title: 'Privacy Policy', onTap: () {}),
+                      _settingsTile(title: 'Terms & Conditions', onTap: () {}),
+                    ],
+                  ),
+                  const SizedBox(height: 30),
+                  const Text(
+                    'About',
+                    style: TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.w700,
+                      color: darkText,
+                    ),
+                  ),
+                  const SizedBox(height: 12),
+                  _sectionCard(
+                    children: [
+                      _settingsTile(title: 'About App', onTap: () {}),
+                      _settingsTile(title: 'Rate App', onTap: () {}),
+                      _settingsTile(title: 'Share App', onTap: () {}),
+                    ],
+                  ),
+                  const SizedBox(height: 120),
+                ],
+              ),
             ),
-          ),
+          ],
         ),
       ),
     );
   }
-}
 
-class SettingsSectionTitle extends StatelessWidget {
-  final String title;
-
-  const SettingsSectionTitle({super.key, required this.title});
-
-  @override
-  Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 4),
-      child: Text(
-        title,
-        style: const TextStyle(
-          color: Color(0xFF202938),
-          fontSize: 16,
-          fontWeight: FontWeight.w700,
-        ),
-      ),
-    );
-  }
-}
-
-class SettingsItemTile extends StatelessWidget {
-  final IconData icon;
-  final String title;
-  final String subtitle;
-
-  const SettingsItemTile({
-    super.key,
-    required this.icon,
-    required this.title,
-    required this.subtitle,
-  });
-
-  @override
-  Widget build(BuildContext context) {
+  static Widget _sectionCard({required List<Widget> children}) {
     return Container(
-      padding: const EdgeInsets.all(14),
+      padding: const EdgeInsets.symmetric(vertical: 8),
       decoration: BoxDecoration(
         color: Colors.white,
-        borderRadius: BorderRadius.circular(14),
-      ),
-      child: Row(
-        children: [
-          Container(
-            width: 48,
-            height: 48,
-            decoration: BoxDecoration(
-              color: const Color(0xFFE0F2FE),
-              borderRadius: BorderRadius.circular(12),
-            ),
-            child: Icon(icon, color: const Color(0xFF0674A1), size: 24),
+        borderRadius: BorderRadius.circular(10),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.08),
+            blurRadius: 10,
+            offset: const Offset(0, 4),
           ),
-          const SizedBox(width: 14),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
+        ],
+      ),
+      child: Column(children: children),
+    );
+  }
+
+  static Widget _settingsTile({
+    required String title,
+    VoidCallback? onTap,
+    Widget? trailing,
+  }) {
+    return SizedBox(
+      height: 35,
+      child: InkWell(
+        onTap: onTap,
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 20),
+          child: Row(
+            children: [
+              Expanded(
+                child: Text(
                   title,
                   style: const TextStyle(
-                    color: Color(0xFF202938),
                     fontSize: 16,
-                    fontWeight: FontWeight.w700,
-                  ),
-                ),
-                const SizedBox(height: 6),
-                Text(
-                  subtitle,
-                  style: const TextStyle(
-                    color: Color(0xFF5F5F5F),
-                    fontSize: 13,
                     fontWeight: FontWeight.w400,
+                    color: greyText,
                   ),
                 ),
-              ],
-            ),
-          ),
-          const Icon(
-            Icons.arrow_forward_ios_rounded,
-            size: 18,
-            color: Color(0xFF9CA3AF),
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-class SettingsToggleTile extends StatefulWidget {
-  final IconData icon;
-  final String title;
-  final String subtitle;
-
-  const SettingsToggleTile({
-    super.key,
-    required this.icon,
-    required this.title,
-    required this.subtitle,
-  });
-
-  @override
-  State<SettingsToggleTile> createState() => _SettingsToggleTileState();
-}
-
-class _SettingsToggleTileState extends State<SettingsToggleTile> {
-  bool isEnabled = true;
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.all(14),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(14),
-      ),
-      child: Row(
-        children: [
-          Container(
-            width: 48,
-            height: 48,
-            decoration: BoxDecoration(
-              color: const Color(0xFFE0F2FE),
-              borderRadius: BorderRadius.circular(12),
-            ),
-            child: Icon(widget.icon, color: const Color(0xFF0674A1), size: 24),
-          ),
-          const SizedBox(width: 14),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  widget.title,
-                  style: const TextStyle(
-                    color: Color(0xFF202938),
-                    fontSize: 16,
-                    fontWeight: FontWeight.w700,
+              ),
+              trailing ??
+                  const Icon(
+                    Icons.arrow_forward_ios_rounded,
+                    size: 17,
+                    color: greyText,
                   ),
-                ),
-                const SizedBox(height: 6),
-                Text(
-                  widget.subtitle,
-                  style: const TextStyle(
-                    color: Color(0xFF5F5F5F),
-                    fontSize: 13,
-                    fontWeight: FontWeight.w400,
-                  ),
-                ),
-              ],
-            ),
+            ],
           ),
-          Switch(
-            value: isEnabled,
-            onChanged: (value) {
-              setState(() {
-                isEnabled = value;
-              });
-            },
-            activeThumbColor: const Color(0xFF0674A1),
-          ),
-        ],
+        ),
       ),
     );
   }

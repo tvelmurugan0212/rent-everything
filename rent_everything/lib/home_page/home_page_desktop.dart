@@ -13,7 +13,6 @@ class HomePageDesktop extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return DesktopLayout(
-      selectedIndex: 0,
       pageTitle: 'Dashboard',
       child: SingleChildScrollView(
         padding: const EdgeInsets.fromLTRB(48, 42, 48, 32),
