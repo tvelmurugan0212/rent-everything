@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get/get_navigation/src/root/get_material_app.dart';
 import 'package:rent_everything/firebase_options.dart';
+import 'package:rent_everything/services/auth_service.dart';
 import 'package:rent_everything/services/fcm_service.dart';
 
 import 'my_routes.dart';
@@ -21,6 +22,7 @@ void main() async {
 
   FirebaseMessaging.onBackgroundMessage(_onBackgroundMessage);
 
+  Get.put(AuthService(), permanent: true);
   Get.put(FcmService(), permanent: true);
 
   runApp(const MainApp());

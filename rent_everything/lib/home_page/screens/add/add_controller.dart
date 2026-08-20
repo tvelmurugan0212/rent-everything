@@ -5,6 +5,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:rent_everything/services/auth_service.dart';
 
 class AddController extends GetxController {
   // ============================================================
@@ -389,7 +390,7 @@ class AddController extends GetxController {
         'pickupCity': pickupCityController.text.trim(),
         'condition': conditionController.text.trim(),
         'imageUrl': imageDataUrl,
-        'ownerId': 'user_001',
+        'ownerId': AuthService.instance.userId,
         'isWishlist': false,
         'createdAt': now,
         'updatedAt': now,

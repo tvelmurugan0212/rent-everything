@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+
+import 'notification_controller.dart';
 
 class NotificationDesktop extends StatelessWidget {
   const NotificationDesktop({super.key});
@@ -9,6 +12,8 @@ class NotificationDesktop extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final controller = Get.put(NotificationController());
+
     return Scaffold(
       backgroundColor: const Color(0xFFF8FAFC),
       appBar: AppBar(
@@ -27,50 +32,37 @@ class NotificationDesktop extends StatelessWidget {
         child: Center(
           child: SizedBox(
             width: 1000,
-            child: ListView(
-              padding: const EdgeInsets.all(28),
-              children: const [
-                NotificationItemCard(
-                  title: 'Booking Confirmed',
-                  subtitle: 'Your rental booking has been confirmed',
-                  time: '2 hours ago',
-                  icon: Icons.check_circle,
-                  read: false,
-                ),
-                SizedBox(height: 16),
-                NotificationItemCard(
-                  title: 'Rental Return Due',
-                  subtitle: 'Return your Royal Enfield by tomorrow',
-                  time: '5 hours ago',
-                  icon: Icons.schedule,
-                  read: false,
-                ),
-                SizedBox(height: 16),
-                NotificationItemCard(
-                  title: 'Payment Received',
-                  subtitle: '₹1,200 payment received for your booking',
-                  time: '1 day ago',
-                  icon: Icons.payment,
-                  read: true,
-                ),
-                SizedBox(height: 16),
-                NotificationItemCard(
-                  title: 'New Offer Available',
-                  subtitle: 'Get 20% off on bike rentals this weekend',
-                  time: '2 days ago',
-                  icon: Icons.local_offer,
-                  read: true,
-                ),
-                SizedBox(height: 16),
-                NotificationItemCard(
-                  title: 'Rental Extended',
-                  subtitle: 'Your rental period has been extended for 2 days',
-                  time: '3 days ago',
-                  icon: Icons.extension,
-                  read: true,
-                ),
-              ],
-            ),
+            child: Obx(() {
+              if (controller.isLoading.value) {
+                return const Center(child: CircularProgressIndicator());
+              }
+              if (controller.notifications.isEmpty) {
+                return const Center(
+                  child: Text(
+                    'No notifications yet',
+                    style: TextStyle(fontSize: 16, color: greyText),
+                  ),
+                );
+              }
+              return ListView.builder(
+                padding: const EdgeInsets.all(28),
+                itemCount: controller.notifications.length,
+                itemBuilder: (context, index) {
+                  final notification = controller.notifications[index];
+                  final isRead = notification['isRead'] ?? false;
+                  return Padding(
+                    padding: const EdgeInsets.only(bottom: 16),
+                    child: NotificationItemCard(
+                      title: notification['title'] ?? '',
+                      subtitle: notification['body'] ?? '',
+                      time: controller.getTimeAgo(notification['createdAt']),
+                      icon: Icons.notifications,
+                      read: isRead,
+                    ),
+                  );
+                },
+              );
+            }),
           ),
         ),
       ),

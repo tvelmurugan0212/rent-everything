@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+
+import 'notification_controller.dart';
 
 class NotificationMobile extends StatelessWidget {
   const NotificationMobile({super.key});
@@ -9,6 +12,8 @@ class NotificationMobile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final controller = Get.put(NotificationController());
+
     return Scaffold(
       backgroundColor: Colors.white,
       body: SafeArea(
@@ -56,19 +61,14 @@ class NotificationMobile extends StatelessWidget {
                     mainAxisSize: MainAxisSize.min,
                     children: [
                       const SizedBox(width: 16),
-
                       _filterButton(title: 'All', selected: true, width: 60),
-
                       const SizedBox(width: 12),
-
                       _filterButton(
                         title: 'Renter',
                         selected: false,
                         width: 83,
                       ),
-
                       const SizedBox(width: 12),
-
                       _filterButton(
                         title: 'Lender',
                         selected: false,
@@ -81,56 +81,34 @@ class NotificationMobile extends StatelessWidget {
             ),
             const SizedBox(height: 10),
             Expanded(
-              child: ListView(
-                padding: EdgeInsets.zero,
-                physics: const BouncingScrollPhysics(),
-                children: [
-                  _notificationItem(
-                    image: 'assets/images/profile.png',
-                    title: 'Booking Confirmed',
-                    message: 'Your iPhone 16 Pro booking has been co...',
-                    time: '2 min ago',
-                  ),
-                  _notificationItem(
-                    image: 'assets/images/profile2.png',
-                    title: 'Payment Successful',
-                    message: 'Your payment of ₹2,700 was successful.',
-                    time: '29 min ago',
-                    highlighted: true,
-                  ),
-                  _notificationItem(
-                    image: 'assets/images/profile3.png',
-                    title: 'Pickup Reminder',
-                    message: 'Your rental starts tomorrow at 10:00 AM.',
-                    time: '30 min ago',
-                  ),
-                  _notificationItem(
-                    image: 'assets/images/profile4.png',
-                    title: 'Wishlist Update',
-                    message: 'A saved product is now available.',
-                    time: '45 min ago',
-                  ),
-                  _notificationItem(
-                    image: 'assets/images/profile5.png',
-                    title: 'Pickup Reminder',
-                    message: 'Your rental starts tomorrow at 10:00 AM.',
-                    time: '1 hours ago',
-                  ),
-                  _notificationItem(
-                    image: 'assets/images/profile6.png',
-                    title: 'Booking Confirmed',
-                    message: 'Your iPhone 16 Pro booking has been co...',
-                    time: '1 hours ago',
-                    highlighted: true,
-                  ),
-                  _notificationItem(
-                    image: 'assets/images/profile7.png',
-                    title: 'Booking Confirmed',
-                    message: 'Your iPhone 16 Pro booking has been co...',
-                    time: '2 hours ago',
-                  ),
-                ],
-              ),
+              child: Obx(() {
+                if (controller.isLoading.value) {
+                  return const Center(child: CircularProgressIndicator());
+                }
+                if (controller.notifications.isEmpty) {
+                  return const Center(
+                    child: Text(
+                      'No notifications yet',
+                      style: TextStyle(fontSize: 16, color: greyText),
+                    ),
+                  );
+                }
+                return ListView.builder(
+                  padding: EdgeInsets.zero,
+                  physics: const BouncingScrollPhysics(),
+                  itemCount: controller.notifications.length,
+                  itemBuilder: (context, index) {
+                    final notification = controller.notifications[index];
+                    final isRead = notification['isRead'] ?? false;
+                    return _notificationItem(
+                      title: notification['title'] ?? '',
+                      message: notification['body'] ?? '',
+                      time: controller.getTimeAgo(notification['createdAt']),
+                      highlighted: !isRead,
+                    );
+                  },
+                );
+              }),
             ),
           ],
         ),
@@ -166,7 +144,6 @@ class NotificationMobile extends StatelessWidget {
   }
 
   static Widget _notificationItem({
-    required String image,
     required String title,
     required String message,
     required String time,
@@ -184,26 +161,18 @@ class NotificationMobile extends StatelessWidget {
         child: Row(
           children: [
             ClipOval(
-              child: Image.asset(
-                image,
+              child: Container(
                 width: 34,
                 height: 34,
-                fit: BoxFit.cover,
-                errorBuilder: (context, error, stackTrace) {
-                  return Container(
-                    width: 34,
-                    height: 34,
-                    decoration: const BoxDecoration(
-                      color: Color(0xFFE5E7EB),
-                      shape: BoxShape.circle,
-                    ),
-                    child: const Icon(
-                      Icons.person,
-                      color: Colors.grey,
-                      size: 22,
-                    ),
-                  );
-                },
+                decoration: const BoxDecoration(
+                  color: Color(0xFFE0F2FE),
+                  shape: BoxShape.circle,
+                ),
+                child: const Icon(
+                  Icons.notifications,
+                  color: Color(0xFF0674A1),
+                  size: 20,
+                ),
               ),
             ),
             const SizedBox(width: 18),
@@ -222,7 +191,6 @@ class NotificationMobile extends StatelessWidget {
                       color: darkText,
                     ),
                   ),
-                  // const SizedBox(height: 8),
                   Text(
                     message,
                     maxLines: 1,

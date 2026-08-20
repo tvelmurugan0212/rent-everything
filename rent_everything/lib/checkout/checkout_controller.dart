@@ -4,6 +4,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/widgets.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
+import 'package:rent_everything/services/auth_service.dart';
 import 'package:rent_everything/services/notification_service.dart';
 
 class CheckoutController extends GetxController {
@@ -128,7 +129,7 @@ class CheckoutController extends GetxController {
             'serviceFee': serviceFee,
             'totalAmount': totalAmount,
             'paymentMethod': selectedPayment.value,
-            'renterId': 'user_002',
+            'renterId': AuthService.instance.userId,
             'ownerId': product.value?['ownerId'] ?? '',
             'status': 'confirmed',
             'createdAt': FieldValue.serverTimestamp(),
@@ -140,21 +141,14 @@ class CheckoutController extends GetxController {
       debugPrint('Product ownerId: "$ownerId"');
 
       if (ownerId.isEmpty) {
-        ownerId = 'user_001';
-        debugPrint('ownerId was empty, defaulting to: $ownerId');
+        debugPrint('ownerId was empty');
       }
 
       await NotificationService().sendBookingNotification(
         ownerId: ownerId,
         productName: productName,
         bookingId: docRef.id,
-        renterId: 'user_002',
-      );
-
-      await NotificationService().sendBookingConfirmation(
-        renterId: 'user_002',
-        productName: productName,
-        bookingId: docRef.id,
+        renterId: AuthService.instance.userId,
       );
     } catch (e) {
       isBooking.value = false;

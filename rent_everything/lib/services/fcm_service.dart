@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:rent_everything/services/auth_service.dart';
 
 @pragma('vm:entry-point')
 Future<void> _onBackgroundMessage(RemoteMessage message) async {
@@ -47,7 +48,7 @@ class FcmService extends GetxController {
 
   Future<void> _saveToken(String token) async {
     try {
-      const String currentUserId = 'user_001';
+      final currentUserId = AuthService.instance.userId;
 
       await FirebaseFirestore.instance
           .collection('users')
